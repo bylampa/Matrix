@@ -56,6 +56,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           push: true
           tags: |
+            ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}
             ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}-latest
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
