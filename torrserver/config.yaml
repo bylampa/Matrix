@@ -3,7 +3,7 @@ slug: torrserver_matrix
 description: TorrServer с кастомной сборкой MatriX
 image: ghcr.io/bylampa/torrserver-matrix/{arch}
 version: "146.0.0"
-url: https://github.com/bylampa/Matrix
+url: "https://github.com/bylampa/Matrix"
 init: false
 arch:
   - amd64
