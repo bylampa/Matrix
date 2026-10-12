@@ -1,0 +1,16 @@
+name: "TorrServer MatriX"
+description: "TorrServer с кастомной сборкой MatriX"
+version: "1.0.0"
+slug: "torrserver_matrix"
+init: false
+arch:
+  - amd64
+  - aarch64
+  - armv7
+image: "ghcr.io/bylampa/torrserver-matrix"
+startup: application
+boot: auto
+ports:
+  8090/tcp: 8090
+ports_description:
+  8090/tcp: "Web UI"
