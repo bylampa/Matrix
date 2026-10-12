@@ -1,15 +1,17 @@
-name: "TorrServer MatriX"
-description: "TorrServer с кастомной сборкой MatriX"
+name: TorrServer MatriX
+slug: torrserver_matrix
+description: TorrServer с кастомной сборкой MatriX
+image: ghcr.io/bylampa/torrserver-matrix/{arch}
 version: "146.0.0"
-slug: "torrserver_matrix"
+url: https://github.com/bylampa/Matrix
 init: false
 arch:
   - amd64
   - aarch64
-image: "ghcr.io/bylampa/torrserver-matrix:{arch}-latest"
-startup: application
-boot: auto
 ports:
   8090/tcp: 8090
 ports_description:
-  8090/tcp: "Web UI"
+  8090/tcp: Web UI
+startup: application
+boot: auto
+panel_icon: mdi:movie
