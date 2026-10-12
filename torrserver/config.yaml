@@ -6,7 +6,6 @@ init: false
 arch:
   - amd64
   - aarch64
-  - armv7
 image: "ghcr.io/bylampa/torrserver-matrix"
 startup: application
 boot: auto
