@@ -16,6 +16,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      addon_ver: ${{ steps.ver.outputs.addon_ver }}
     strategy:
       matrix:
         include:
@@ -40,14 +42,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine TS_VERSION
-        id: ts
+      - name: Extract versions
+        id: ver
         run: |
           if [ "${{ github.event_name }}" = "release" ]; then
-            echo "version=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+            TAG="${{ github.event.release.tag_name }}"
           else
-            echo "version=${{ github.event.inputs.ts_version || 'MatriX.146.UN' }}" >> "$GITHUB_OUTPUT"
+            TAG="${{ github.event.inputs.ts_version || 'MatriX.146.UN' }}"
           fi
+          # MatriX.146.UN -> 146.0.0
+          NUM=$(echo "$TAG" | grep -oE '[0-9]+' | head -1)
+          echo "ts_tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "addon_ver=${NUM}.0.0" >> "$GITHUB_OUTPUT"
+          echo "Determined: ts_tag=${TAG}, addon_ver=${NUM}.0.0"
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -56,11 +63,11 @@ jobs:
           platforms: ${{ matrix.platform }}
           push: true
           tags: |
-            ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}
-            ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}-latest
+            ghcr.io/bylampa/torrserver-matrix/${{ matrix.arch }}:${{ steps.ver.outputs.addon_ver }}
+            ghcr.io/bylampa/torrserver-matrix/${{ matrix.arch }}:latest
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
-            TS_VERSION=${{ steps.ts.outputs.version }}
+            TS_VERSION=${{ steps.ver.outputs.ts_tag }}
 
   manifest:
     needs: build
@@ -78,9 +85,18 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create multi-arch manifest
+      - name: Create multi-arch manifest (latest)
         run: |
           docker buildx imagetools create \
-            -t ghcr.io/bylampa/torrserver-matrix:latest \
-            ghcr.io/bylampa/torrserver-matrix:amd64-latest \
-            ghcr.io/bylampa/torrserver-matrix:aarch64-latest
+            -t ghcr.io/bylampa/torrserver-matrix/latest \
+            ghcr.io/bylampa/torrserver-matrix/amd64:latest \
+            ghcr.io/bylampa/torrserver-matrix/aarch64:latest
+
+      - name: Create multi-arch manifest (versioned)
+        if: needs.build.outputs.addon_ver != ''
+        run: |
+          VERSION="${{ needs.build.outputs.addon_ver }}"
+          docker buildx imagetools create \
+            -t ghcr.io/bylampa/torrserver-matrix/${VERSION} \
+            ghcr.io/bylampa/torrserver-matrix/amd64:${VERSION} \
+            ghcr.io/bylampa/torrserver-matrix/aarch64:${VERSION}
