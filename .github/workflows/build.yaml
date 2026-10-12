@@ -13,10 +13,14 @@ jobs:
       packages: write
     strategy:
       matrix:
-        arch: [amd64, aarch64, armv7]
+        include:
+          - arch: amd64
+            platform: linux/amd64
+          - arch: aarch64
+            platform: linux/arm64
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -32,10 +36,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./torrserver
-          platforms: ${{ matrix.arch == 'aarch64' && 'linux/arm64' || matrix.arch == 'armv7' && 'linux/arm/v7' || 'linux/amd64' }}
+          platforms: ${{ matrix.platform }}
           push: true
           tags: |
             ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}-${{ github.event.release.tag_name }}
