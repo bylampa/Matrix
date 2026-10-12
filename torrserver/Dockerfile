@@ -3,7 +3,6 @@ FROM ${BUILD_FROM}
 
 RUN apk add --no-cache ca-certificates tzdata unzip
 
-# Маппинг архитектур HA -> имена файлов в релизах bylampa/Matrix
 ARG BUILD_ARCH=amd64
 ARG TS_VERSION=MatriX.146.UN
 
