@@ -4,6 +4,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      ts_version:
+        description: 'TorrServer version tag (e.g. MatriX.146.UN)'
+        required: false
+        default: 'MatriX.146.UN'
 
 jobs:
   build:
@@ -35,6 +40,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Determine TS_VERSION
+        id: ts
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "version=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${{ github.event.inputs.ts_version || 'MatriX.146.UN' }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -45,6 +59,7 @@ jobs:
             ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}-latest
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
+            TS_VERSION=${{ steps.ts.outputs.version }}
 
   manifest:
     needs: build
