@@ -1,6 +1,6 @@
 name: "TorrServer MatriX"
 description: "TorrServer с кастомной сборкой MatriX"
-version: "1.0.0"
+version: "146.0.0"
 slug: "torrserver_matrix"
 init: false
 arch:
