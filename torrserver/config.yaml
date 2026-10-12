@@ -6,7 +6,7 @@ init: false
 arch:
   - amd64
   - aarch64
-image: "ghcr.io/bylampa/torrserver-matrix"
+image: "ghcr.io/bylampa/torrserver-matrix:{arch}-latest"
 startup: application
 boot: auto
 ports:
