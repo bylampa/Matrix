@@ -42,7 +42,29 @@ jobs:
           platforms: ${{ matrix.platform }}
           push: true
           tags: |
-            ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}-${{ github.event.release.tag_name }}
             ghcr.io/bylampa/torrserver-matrix:${{ matrix.arch }}-latest
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
+
+  manifest:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create multi-arch manifest
+        run: |
+          docker buildx imagetools create \
+            -t ghcr.io/bylampa/torrserver-matrix:latest \
+            ghcr.io/bylampa/torrserver-matrix:amd64-latest \
+            ghcr.io/bylampa/torrserver-matrix:aarch64-latest
