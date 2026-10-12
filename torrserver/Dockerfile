@@ -5,6 +5,8 @@ RUN apk add --no-cache ca-certificates tzdata unzip
 
 # Маппинг архитектур HA -> имена файлов в релизах bylampa/Matrix
 ARG BUILD_ARCH=amd64
+ARG TS_VERSION=MatriX.146.UN
+
 RUN case "${BUILD_ARCH}" in \
         amd64)   TS_ARCH=amd64; FFPROBE_URL="https://github.com/ffbinaries/ffbinaries-prebuilt/releases/download/v6.1/ffprobe-6.1-linux-64.zip" ;; \
         aarch64) TS_ARCH=arm64; FFPROBE_URL="https://github.com/ffbinaries/ffbinaries-prebuilt/releases/download/v6.1/ffprobe-6.1-linux-arm-64.zip" ;; \
@@ -17,7 +19,7 @@ RUN case "${BUILD_ARCH}" in \
     chmod +x /usr/bin/ffprobe && \
     rm -rf /tmp/ffprobe.zip && \
     wget -O /usr/bin/torrserver \
-        "https://github.com/bylampa/Matrix/releases/download/MatriX.146.UN/TorrServer-linux-${TS_ARCH}" && \
+        "https://github.com/bylampa/Matrix/releases/download/${TS_VERSION}/TorrServer-linux-${TS_ARCH}" && \
     chmod +x /usr/bin/torrserver
 
 RUN mkdir -p /opt/torrserver/config /opt/torrserver/log /opt/torrserver/torrents
