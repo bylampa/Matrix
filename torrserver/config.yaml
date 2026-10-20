@@ -8,6 +8,8 @@ init: false
 arch:
   - amd64
   - aarch64
+map:
+  - addon_config:rw
 ports:
   8090/tcp: 8090
 ports_description:
