@@ -1,11 +1,12 @@
 #!/usr/bin/with-contenv bashio
 
-mkdir -p /opt/torrserver/config /opt/torrserver/log /opt/torrserver/torrents
+# Создаём папки внутри постоянного хранилища (смонтировано через map: addon_config:rw)
+mkdir -p /config/torrserver/config /config/torrserver/log /config/torrserver/torrents
 
 exec /usr/bin/torrserver \
     --port 8090 \
-    --path /opt/torrserver/config \
-    --logpath /opt/torrserver/log/ts.log \
-    --weblogpath /opt/torrserver/log/tsweb.log \
-    --torrentsdir /opt/torrserver/torrents \
+    --path /config/torrserver/config \
+    --logpath /config/torrserver/log/ts.log \
+    --weblogpath /config/torrserver/log/tsweb.log \
+    --torrentsdir /config/torrserver/torrents \
     --torrentaddr :32000
